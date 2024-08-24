@@ -61,6 +61,26 @@ app.delete('/group/:groupId', (req, res) => {
     return res.json({ message: 'Group deleted successfully' });
 });
 
+// Get all groups
+
+app.get('/groups', (req, res) => {
+    const dir = path.join(__dirname, 'uploads');
+
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ message: 'Server error' });
+        }
+
+        const groupList = files.map(group => {
+            return {
+                name: group
+            };
+        });
+
+        return res.json(groupList);
+    });
+});
+
 // Upload a file to a group
 
 app.post('/upload/:groupId', upload.single('image'), (req, res) => {
@@ -87,6 +107,12 @@ app.get('/files/:groupId', (req, res) => {
 
         res.json(fileList);
     });
+});
+
+// Welcome message
+
+app.get('/', (req, res) => {
+    return res.json({ message: 'Welcome to the file upload API' });
 });
 
 // Serve API on port 3000
