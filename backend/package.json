@@ -1,0 +1,23 @@
+{
+  "name": "aurorapp-backend",
+  "version": "1.0.0",
+  "description": "Backend for AURORApp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DA-ETSISI/AURORApp.git"
+  },
+  "author": "Alejandro Alonso López",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DA-ETSISI/AURORApp/issues"
+  },
+  "homepage": "https://github.com/DA-ETSISI/AURORApp#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
