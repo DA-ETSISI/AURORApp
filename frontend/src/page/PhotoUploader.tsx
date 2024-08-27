@@ -53,7 +53,7 @@ export default function PhotoUploader() {
       <Card className="w-full max-w-md mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
           <img
-            src="../../public/aurora.png"
+            src="../../public/Logo-Website.webp"
             alt="Aurora Logo"
             width={200}
             height={50}
