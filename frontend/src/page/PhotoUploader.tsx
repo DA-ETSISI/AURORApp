@@ -1,12 +1,11 @@
 
 
 import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
 import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
-import Image from 'next/image'
 
 export default function PhotoUploader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -53,7 +52,7 @@ export default function PhotoUploader() {
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
       <Card className="w-full max-w-md mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
-          <Image
+          <img
             src="../../public/aurora.png"
             alt="Aurora Logo"
             width={200}
