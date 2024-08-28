@@ -4,8 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { DownloadIcon, TrashIcon, ImageIcon } from 'lucide-react'
-import { Viewport } from '@radix-ui/react-select'
+import { DownloadIcon, TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 
 // Simulated data for groups and photos
 const initialGroups = [
@@ -26,19 +25,19 @@ const initialGroups = [
   },
 ]
 
-export default function AdminPage() {
+export default function Component() {
   const [groups, setGroups] = useState(initialGroups)
   const [adminPassword, setAdminPassword] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [selectedGroupId, setSelectedGroupId] = useState(groups[0]?.id.toString())
+  const [newGroupName, setNewGroupName] = useState('')
 
   const handleLogin = (event) => {
     event.preventDefault()
     // In a real app, you would validate against a backend
-    if (adminPassword === import.meta.env.VITE_ADMIN_PASSWORD) {
+    if (adminPassword === 'admin123') {
       setIsLoggedIn(true)
     } else {
-      console.log(import.meta.env.ADMIN_PASSWORD)
       alert('Invalid password')
     }
   }
@@ -58,6 +57,20 @@ export default function AdminPage() {
   const handleDownloadPhoto = (photoName) => {
     // In a real app, this would trigger a file download
     alert(`Downloading ${photoName}`)
+  }
+
+  const handleCreateGroup = (event) => {
+    event.preventDefault()
+    if (newGroupName.trim()) {
+      const newGroup = {
+        id: groups.length + 1,
+        name: newGroupName.trim(),
+        photos: []
+      }
+      setGroups([...groups, newGroup])
+      setNewGroupName('')
+      setSelectedGroupId(newGroup.id.toString())
+    }
   }
 
   if (!isLoggedIn) {
@@ -109,20 +122,38 @@ export default function AdminPage() {
           <CardTitle className="text-3xl font-bold">Admin Dashboard</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
-          <div className="mb-6">
-            <Label htmlFor="groupSelect" className="text-gray-700 mb-2 block">Select Group</Label>
-            <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
-              <SelectTrigger id="groupSelect" className="w-full">
-                <SelectValue placeholder="Select a group" />
-              </SelectTrigger>
-              <SelectContent>
-                {groups.map(group => (
-                  <SelectItem key={group.id} value={group.id.toString()}>
-                    {group.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="mb-6 space-y-4">
+            <div>
+              <Label htmlFor="groupSelect" className="text-gray-700 mb-2 block">Select Group</Label>
+              <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
+                <SelectTrigger id="groupSelect" className="w-full">
+                  <SelectValue placeholder="Select a group" />
+                </SelectTrigger>
+                <SelectContent>
+                  {groups.map(group => (
+                    <SelectItem key={group.id} value={group.id.toString()}>
+                      {group.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="newGroupName" className="text-gray-700 mb-2 block">Create New Group</Label>
+              <form onSubmit={handleCreateGroup} className="flex space-x-2">
+                <Input
+                  id="newGroupName"
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                  placeholder="Enter group name"
+                  className="flex-grow border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+                />
+                <Button type="submit" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
+                  <PlusIcon className="w-4 h-4 mr-2" />
+                  Create
+                </Button>
+              </form>
+            </div>
           </div>
           
           {selectedGroup && (
