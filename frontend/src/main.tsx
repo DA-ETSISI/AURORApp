@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import {createBrowserRouter, Route, RouterProvider} from "react-router-dom"
+import {createBrowserRouter, RouterProvider} from "react-router-dom"
 import PhotoUploader from './page/PhotoUploader'
 import "./App.css"
 import AdminPage from './page/AdminPage'

@@ -5,6 +5,7 @@ import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { DownloadIcon, TrashIcon, ImageIcon } from 'lucide-react'
+import { Viewport } from '@radix-ui/react-select'
 
 // Simulated data for groups and photos
 const initialGroups = [
@@ -34,9 +35,10 @@ export default function AdminPage() {
   const handleLogin = (event) => {
     event.preventDefault()
     // In a real app, you would validate against a backend
-    if (adminPassword === 'admin123') {
+    if (adminPassword === import.meta.env.VITE_ADMIN_PASSWORD) {
       setIsLoggedIn(true)
     } else {
+      console.log(import.meta.env.ADMIN_PASSWORD)
       alert('Invalid password')
     }
   }
