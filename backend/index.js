@@ -61,6 +61,29 @@ app.delete('/group/:groupId', (req, res) => {
     return res.json({ message: 'Group deleted successfully' });
 });
 
+// Get all files on a Group
+
+app.get('/files/:groupId', (req, res) => {
+    const groupId = req.params.groupId;
+    const dir = path.join(__dirname, 'uploads', groupId);
+
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ message: 'Server error' });
+        }
+
+        const fileList = files.map(file => {
+            return {
+                
+                name: file,
+                url: `http://localhost:3000/uploads/${groupId}/${file}`
+            };
+        });
+
+        res.json(fileList);
+    });
+})
+
 // Get all groups
 
 app.get('/groups', (req, res) => {
