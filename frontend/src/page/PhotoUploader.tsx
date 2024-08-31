@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
@@ -14,11 +14,45 @@ export default function PhotoUploader() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadedPhotos, setUploadedPhotos] = useState([])
 
+  const sendPhoto = async (groupId, photo) => {
+    return fetch(`http://localhost:3000/upload/${groupId}`, {
+      method: 'POST',
+      body: photo
+    }).then(response => response.json())
+  }
+
+  const getGroupPhotos = async (groupId) => {
+    return fetch(`http://localhost:3000/files/${groupId}`).then(response => response.json())
+  }
+
+  const checkIfGroupExists = async (groupId) => {
+    return fetch(`http://localhost:3000/group/${groupId}`)
+  }
+
+  useEffect(() => {
+    getGroupPhotos(groupName).then(photos => {
+      setUploadedPhotos(photos)
+    })
+  },[isLoggedIn])
+
   const handleLogin = (event) => {
     event.preventDefault()
-    if (groupName && password) {
-      setIsLoggedIn(true)
-    }
+
+    checkIfGroupExists(groupName)
+      .then(response => {
+        if (response.status !== 200) {
+          alert('Invalid group name or password')
+          return
+        } else {
+          const passwordToCheck = btoa(groupName)
+          if (password !== passwordToCheck) {
+            alert('Invalid group name or password')
+            return
+          }
+
+          setIsLoggedIn(true)
+        }
+      })
   }
 
   const handleLogout = () => {
@@ -35,16 +69,24 @@ export default function PhotoUploader() {
     event.preventDefault()
     if (selectedFile) {
       const formData = new FormData()
-      formData.append('photo', selectedFile)
-      formData.append('group', groupName)
+      formData.append('image', selectedFile)
 
-      setUploadedPhotos([...uploadedPhotos, { 
-        id: Date.now(), 
-        name: selectedFile.name
-      }])
+      sendPhoto(groupName, formData)
+        .then(response => {
+          if (!response.filePath) {
+            alert('Error uploading photo')
+            return
+          }
 
-      setSelectedFile(null)
-      event.target.reset()
+          setUploadedPhotos([...uploadedPhotos, { 
+            id: Date.now(), 
+            name: selectedFile.name,
+            url: response.url
+          }])
+
+          setSelectedFile(null)
+          event.target.reset()
+        })
     }
   }
 
@@ -59,13 +101,13 @@ export default function PhotoUploader() {
             height={50}
             className="mb-2"
           />
-          <CardTitle className="text-3xl font-bold">Photo Uploader</CardTitle>
+          <CardTitle className="text-3xl font-bold">Subida de fotos</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           {!isLoggedIn ? (
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <Label htmlFor="groupName" className="text-gray-700">Group Name</Label>
+                <Label htmlFor="groupName" className="text-gray-700">Nombre de grupo</Label>
                 <Input 
                   id="groupName" 
                   value={groupName} 
@@ -97,7 +139,7 @@ export default function PhotoUploader() {
                   <LogOutIcon className="mr-2 h-4 w-4" /> Logout
                 </Button>
               </div>
-              <form onSubmit={handleUpload} className="space-y-4">
+              <form onSubmit={handleUpload} className="space-y-4" encType='multipart/form-data'>
                 <div>
                   <Label htmlFor="photo" className="text-gray-700">Upload Photo</Label>
                   <Input 
@@ -125,10 +167,21 @@ export default function PhotoUploader() {
                 ) : (
                   <ul className="space-y-2">
                     {uploadedPhotos.map((photo) => (
-                      <li key={photo.id} className="flex items-center space-x-2 bg-gray-50 p-2 rounded-lg">
-                        <ImageIcon className="h-5 w-5 text-cyan-500" />
-                        <span className="text-gray-700">{photo.name}</span>
-                      </li>
+                    <Card key={photo.id.toString()} className="overflow-hidden">
+                      <img
+                        src={photo.url}
+                        alt={photo.name}
+                        className="w-full h-auto object-cover"
+                      />
+                      <CardContent className="p-2">
+                        <div className="flex items-center mb-2">
+                          <ImageIcon className="h-5 w-5 text-cyan-500 mr-2" />
+                          <p className="text-sm font-medium truncate">{photo.name}</p>
+                        </div>
+                        <div className="flex justify-between">
+                        </div>
+                      </CardContent>
+                    </Card>
                     ))}
                   </ul>
                 )}

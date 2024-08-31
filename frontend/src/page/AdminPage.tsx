@@ -1,41 +1,63 @@
-import { useState } from 'react'
+
+import { useEffect, useState } from 'react'
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { DownloadIcon, TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
+import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 
-// Simulated data for groups and photos
-const initialGroups = [
-  {
-    id: 1,
-    name: 'Group A',
-    photos: [
-      { id: 1, name: 'Photo 1.jpg', url: '/placeholder.svg?height=100&width=100' },
-      { id: 2, name: 'Photo 2.jpg', url: '/placeholder.svg?height=100&width=100' },
-    ]
-  },
-  {
-    id: 2,
-    name: 'Group B',
-    photos: [
-      { id: 3, name: 'Photo 3.jpg', url: '/placeholder.svg?height=100&width=100' },
-    ]
-  },
-]
-
-export default function Component() {
-  const [groups, setGroups] = useState(initialGroups)
+export default function AdminPage() {
+  const [groups, setGroups] = useState([])
   const [adminPassword, setAdminPassword] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [selectedGroupId, setSelectedGroupId] = useState(groups[0]?.id.toString())
   const [newGroupName, setNewGroupName] = useState('')
+  
+  useEffect(() => {
+    getGroups().then(groups => {
+      if (groups.message) {
+        setGroups([])
+        return
+      }
+      for (const group of groups) {
+        group.id = group.name
+        const photos = getPhotos(group.id)
+        photos.then(data => {
+          group.photos = data
+        })
+      }
 
+      setGroups(groups)
+    })
+  }, [])
+
+
+
+  const getGroups = () => {
+    return fetch('http://localhost:3000/groups', { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
+  }
+
+  const getPhotos = (groupId) => {
+    return fetch(`http://localhost:3000/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
+  }
+
+
+  const deletePhoto = (groupId, photoId) => {
+    return fetch(`http://localhost:3000/file/${groupId}/${photoId}`, {
+      method: 'DELETE',
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    }).then(response => response.json())
+  }
+
+
+  
   const handleLogin = (event) => {
     event.preventDefault()
     // In a real app, you would validate against a backend
-    if (adminPassword === 'admin123') {
+    if (adminPassword === import.meta.env.VITE_ADMIN_PASSWORD) {
       setIsLoggedIn(true)
     } else {
       alert('Invalid password')
@@ -43,33 +65,43 @@ export default function Component() {
   }
 
   const handleDeletePhoto = (groupId, photoId) => {
-    setGroups(groups.map(group => {
-      if (group.id === groupId) {
-        return {
-          ...group,
-          photos: group.photos.filter(photo => photo.id !== photoId)
-        }
+    deletePhoto(groupId, photoId).then(response => {
+      if (response.error) {
+        alert('Error deleting photo')
+        return
       }
-      return group
-    }))
-  }
-
-  const handleDownloadPhoto = (photoName) => {
-    // In a real app, this would trigger a file download
-    alert(`Downloading ${photoName}`)
+      setGroups(groups.map(group => {
+        if (group.id === groupId) {
+          return {
+            ...group,
+            photos: group.photos.filter(photo => photo.id !== photoId)
+          }
+        }
+        return group
+      }))
+    })
   }
 
   const handleCreateGroup = (event) => {
     event.preventDefault()
     if (newGroupName.trim()) {
-      const newGroup = {
-        id: groups.length + 1,
-        name: newGroupName.trim(),
-        photos: []
-      }
-      setGroups([...groups, newGroup])
-      setNewGroupName('')
-      setSelectedGroupId(newGroup.id.toString())
+      fetch('http://localhost:3000/group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({ name: newGroupName.trim()})
+      }).then(() => {
+        const newGroup = {
+          id: newGroupName.trim(),
+          name: newGroupName.trim(),
+          photos: []
+        }
+        setGroups([...groups, newGroup])
+        setNewGroupName('')
+        setSelectedGroupId(newGroup.id.toString())
+      })
     }
   }
 
@@ -83,7 +115,7 @@ export default function Component() {
               alt="Aurora Logo"
               className="w-48 h-12 object-contain mb-2"
             />
-            <CardTitle className="text-3xl font-bold">Admin Login</CardTitle>
+            <CardTitle className="text-3xl font-bold">Inicio de Sesión Observador</CardTitle>
           </CardHeader>
           <CardContent className="mt-4">
             <form onSubmit={handleLogin} className="space-y-4">
@@ -119,7 +151,7 @@ export default function Component() {
             alt="Aurora Logo"
             className="w-48 h-12 object-contain mb-2"
           />
-          <CardTitle className="text-3xl font-bold">Admin Dashboard</CardTitle>
+          <CardTitle className="text-3xl font-bold">Vista del Observador</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           <div className="mb-6 space-y-4">
@@ -150,7 +182,7 @@ export default function Component() {
                 />
                 <Button type="submit" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
                   <PlusIcon className="w-4 h-4 mr-2" />
-                  Create
+                  Crear
                 </Button>
               </form>
             </div>
@@ -158,17 +190,17 @@ export default function Component() {
           
           {selectedGroup && (
             <div>
-              <h3 className="text-xl font-semibold mb-4">{selectedGroup.name} Photos</h3>
+              <h3 className="text-xl font-semibold mb-4">Fotos del grupo {selectedGroup.name}</h3>
               {selectedGroup.photos.length === 0 ? (
-                <p className="text-gray-500">No photos uploaded for this group.</p>
+                <p className="text-gray-500">Este grupo aún no ha subido fotos</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {selectedGroup.photos.map(photo => (
-                    <Card key={photo.id} className="overflow-hidden">
+                    <Card key={photo.id.toString()} className="overflow-hidden">
                       <img
                         src={photo.url}
                         alt={photo.name}
-                        className="w-full h-32 object-cover"
+                        className="w-full h-auto object-cover"
                       />
                       <CardContent className="p-2">
                         <div className="flex items-center mb-2">
@@ -176,15 +208,6 @@ export default function Component() {
                           <p className="text-sm font-medium truncate">{photo.name}</p>
                         </div>
                         <div className="flex justify-between">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleDownloadPhoto(photo.name)}
-                            className="flex-1 mr-1"
-                          >
-                            <DownloadIcon className="w-4 h-4 mr-1" />
-                            Download
-                          </Button>
                           <Button 
                             size="sm" 
                             variant="outline"

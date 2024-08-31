@@ -2,10 +2,11 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const cors = require('cors');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 // Configure multer storage settings
 
@@ -31,10 +32,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Serve uploaded files
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Create a group
 
 app.post('/group', (req, res) => {
-    const groupId = req.body.groupId;
+    const groupId = req.body.name;
     const dir = path.join(__dirname, 'uploads', groupId);
 
     if (fs.existsSync(dir)) {
@@ -74,7 +79,7 @@ app.get('/files/:groupId', (req, res) => {
 
         const fileList = files.map(file => {
             return {
-                
+                id: file,
                 name: file,
                 url: `http://localhost:3000/uploads/${groupId}/${file}`
             };
@@ -83,6 +88,20 @@ app.get('/files/:groupId', (req, res) => {
         res.json(fileList);
     });
 })
+
+// Get if a group exists
+
+app.get('/group/:groupId', (req, res) => {
+    console.log("Group ID: ", req.params.groupId);
+    const groupId = req.params.groupId;
+    const dir = path.join(__dirname, 'uploads', groupId);
+
+    if (!fs.existsSync(dir)) {
+        return res.status(400).json({ message: 'Group does not exist' });
+    }
+
+    return res.json({ message: 'Group exists' });
+});
 
 // Get all groups
 
@@ -107,29 +126,24 @@ app.get('/groups', (req, res) => {
 // Upload a file to a group
 
 app.post('/upload/:groupId', upload.single('image'), (req, res) => {
-    res.json({ message: 'File uploaded successfully', filePath: req.file.path });
+    console.log(req.file);
+    res.status(200).json({ message: 'File uploaded successfully', filePath: req.file.path });
 });
 
-// Get all files in a group
+// Delete a file from a group
 
-app.get('/files/:groupId', (req, res) => {
+app.delete('/file/:groupId/:fileName', (req, res) => {
     const groupId = req.params.groupId;
-    const dir = path.join(__dirname, 'uploads', groupId);
+    const fileName = req.params.fileName;
+    const dir = path.join(__dirname, 'uploads', groupId, fileName);
 
-    fs.readdir(dir, (err, files) => {
-        if (err) {
-            return res.status(500).json({ message: 'Server error' });
-        }
+    if (!fs.existsSync(dir)) {
+        return res.status(400).send({ error: "Error", message: 'File does not exist' });
+    }
 
-        const fileList = files.map(file => {
-            return {
-                name: file,
-                url: `http://localhost:3000/uploads/${groupId}/${file}`
-            };
-        });
+    fs.unlinkSync(dir);
 
-        res.json(fileList);
-    });
+    return res.status(200).json({ message: 'File deleted successfully' });
 });
 
 // Welcome message
