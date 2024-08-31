@@ -6,6 +6,7 @@ import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
+import auroraLogo from '../../public/Logo-Website.webp'
 
 export default function AdminPage() {
   const [groups, setGroups] = useState([])
@@ -111,7 +112,7 @@ export default function AdminPage() {
         <Card className="w-full max-w-md mx-auto bg-white shadow-xl">
           <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
             <img
-              src="../../public/Logo-Website.webp"
+              src={auroraLogo}
               alt="Aurora Logo"
               className="w-48 h-12 object-contain mb-2"
             />

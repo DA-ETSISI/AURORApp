@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
+import auroraLogo from '../../public/Logo-Website.webp'
 
 export default function PhotoUploader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -95,7 +96,7 @@ export default function PhotoUploader() {
       <Card className="w-full max-w-md mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
           <img
-            src="../../public/Logo-Website.webp"
+            src={auroraLogo}
             alt="Aurora Logo"
             width={200}
             height={50}
