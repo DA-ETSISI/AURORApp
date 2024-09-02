@@ -36,16 +36,16 @@ export default function AdminPage() {
 
 
   const getGroups = () => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:3000/groups`, { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
+    return fetch(`http://${import.meta.env.VITE_HOST}:8080/groups`, { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
   }
 
   const getPhotos = (groupId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:3000/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
+    return fetch(`http://${import.meta.env.VITE_HOST}:8080/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
   }
 
 
   const deletePhoto = (groupId, photoId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:3000/file/${groupId}/${photoId}`, {
+    return fetch(`http://${import.meta.env.VITE_HOST}:8080/file/${groupId}/${photoId}`, {
       method: 'DELETE',
       headers: {
         'Access-Control-Allow-Origin': '*'
@@ -86,7 +86,7 @@ export default function AdminPage() {
   const handleCreateGroup = (event) => {
     event.preventDefault()
     if (newGroupName.trim()) {
-      fetch(`http://${import.meta.env.VITE_HOST}:3000/group`, {
+      fetch(`http://${import.meta.env.VITE_HOST}:8080/group`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -16,18 +16,18 @@ export default function PhotoUploader() {
   const [uploadedPhotos, setUploadedPhotos] = useState([])
 
   const sendPhoto = async (groupId, photo) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:3000/upload/${groupId}`, {
+    return fetch(`http://${import.meta.env.VITE_HOST}:8080/upload/${groupId}`, {
       method: 'POST',
       body: photo
     }).then(response => response.json())
   }
 
   const getGroupPhotos = async (groupId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:3000/files/${groupId}`).then(response => response.json())
+    return fetch(`http://${import.meta.env.VITE_HOST}:8080/files/${groupId}`).then(response => response.json())
   }
 
   const checkIfGroupExists = async (groupId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:3000/group/${groupId}`)
+    return fetch(`http://${import.meta.env.VITE_HOST}:8080/group/${groupId}`)
   }
 
   useEffect(() => {

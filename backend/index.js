@@ -154,6 +154,6 @@ app.get('/', (req, res) => {
 
 // Serve API on port 3000
 
-app.listen(3000, () => {
+app.listen(8080, () => {
   console.log('Server started on http://localhost:3000');
 });
