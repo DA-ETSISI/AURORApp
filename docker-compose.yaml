@@ -21,7 +21,3 @@ services:
       - "8080:8080"
     volumes:
       - ./backend:/app
-    environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
-      - FLASK_RUN_HOST=

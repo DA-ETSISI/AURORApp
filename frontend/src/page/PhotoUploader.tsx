@@ -8,6 +8,8 @@ import { Label } from "../components/ui/label"
 import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 
+const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
+
 export default function PhotoUploader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [groupName, setGroupName] = useState('')
@@ -16,18 +18,18 @@ export default function PhotoUploader() {
   const [uploadedPhotos, setUploadedPhotos] = useState([])
 
   const sendPhoto = async (groupId, photo) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:8080/upload/${groupId}`, {
+    return fetch(`http://${host}:8080/upload/${groupId}`, {
       method: 'POST',
       body: photo
     }).then(response => response.json())
   }
 
   const getGroupPhotos = async (groupId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:8080/files/${groupId}`).then(response => response.json())
+    return fetch(`http://${host}:8080/files/${groupId}`).then(response => response.json())
   }
 
   const checkIfGroupExists = async (groupId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:8080/group/${groupId}`)
+    return fetch(`http://${host}:8080/group/${groupId}`)
   }
 
   useEffect(() => {

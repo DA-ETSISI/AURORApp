@@ -8,6 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 
+const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
+
+const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || process.env.VITE_ADMIN_PASSWORD
+
 export default function AdminPage() {
   const [groups, setGroups] = useState([])
   const [adminPassword, setAdminPassword] = useState('')
@@ -36,16 +40,16 @@ export default function AdminPage() {
 
 
   const getGroups = () => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:8080/groups`, { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
+    return fetch(`http://${host}:8080/groups`, { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
   }
 
   const getPhotos = (groupId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:8080/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
+    return fetch(`http://${host}:8080/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
   }
 
 
   const deletePhoto = (groupId, photoId) => {
-    return fetch(`http://${import.meta.env.VITE_HOST}:8080/file/${groupId}/${photoId}`, {
+    return fetch(`http://${host}:8080/file/${groupId}/${photoId}`, {
       method: 'DELETE',
       headers: {
         'Access-Control-Allow-Origin': '*'
@@ -58,7 +62,7 @@ export default function AdminPage() {
   const handleLogin = (event) => {
     event.preventDefault()
     // In a real app, you would validate against a backend
-    if (adminPassword === import.meta.env.VITE_ADMIN_PASSWORD) {
+    if (adminPassword === realAdminPassword) {
       setIsLoggedIn(true)
     } else {
       alert('Invalid password')
@@ -86,7 +90,7 @@ export default function AdminPage() {
   const handleCreateGroup = (event) => {
     event.preventDefault()
     if (newGroupName.trim()) {
-      fetch(`http://${import.meta.env.VITE_HOST}:8080/group`, {
+      fetch(`http://${host}:8080/group`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +152,7 @@ export default function AdminPage() {
       <Card className="w-full max-w-4xl mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
           <img
-            src="../../public/Logo-Website.webp"
+            src={auroraLogo}
             alt="Aurora Logo"
             className="w-48 h-12 object-contain mb-2"
           />
