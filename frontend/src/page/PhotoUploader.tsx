@@ -80,6 +80,8 @@ export default function PhotoUploader() {
       setLoading(true)
       const formData = new FormData()
       formData.append('image', selectedFile)
+      formData.append('quejas', quejas)
+      formData.append('sugerencias', sugerencias)
 
       sendPhoto(groupName, formData)
         .then(response => {
@@ -89,11 +91,23 @@ export default function PhotoUploader() {
             return
           }
 
-          setUploadedPhotos([...uploadedPhotos, {
+          const photo = {
             id: Date.now(),
             name: selectedFile.name,
-            url: response.url
-          }])
+            url: response.url,
+            quejas: undefined,
+            sugerencias: undefined,
+          }
+
+          if (quejas) {
+            photo.quejas = quejas
+          }
+
+          if (sugerencias) {
+            photo.sugerencias = sugerencias
+          }
+
+          setUploadedPhotos([...uploadedPhotos, photo])
 
           setSelectedFile(null)
           event.target.reset()

@@ -71,6 +71,7 @@ app.delete('/group/:groupId', (req, res) => {
 app.get('/files/:groupId', (req, res) => {
     const groupId = req.params.groupId;
     const dir = path.join(__dirname, 'uploads', groupId);
+    const commentsDir = path.join(__dirname, 'comments', groupId);
 
     fs.readdir(dir, (err, files) => {
         if (err) {
@@ -123,10 +124,40 @@ app.get('/groups', (req, res) => {
     });
 });
 
+// Save comments
+
+function saveComments(comments, dir, fileName) {
+    fileName = fileName.split('.')[0];
+    fileName = fileName + '.json';
+
+    const commentsFile = path.join(dir, fileName);
+    fs.writeFileSync(commentsFile, JSON.stringify(comments));
+}
+
 // Upload a file to a group
 
 app.post('/upload/:groupId', upload.single('image'), (req, res) => {
-    console.log(req.file);
+    const baseCommentsDir = path.join(__dirname, 'comments');
+
+    if (!fs.existsSync(baseCommentsDir)) {
+        fs.mkdirSync(commentsDir, { recursive: true });
+    }
+
+    const groupCommentsDir = path.join(baseCommentsDir, req.params.groupId);
+
+    if (!fs.existsSync(groupCommentsDir)) {
+        fs.mkdirSync(groupCommentsDir, { recursive: true });
+    }
+
+    const comments = { quejas: req.body.quejas, sugerencias: req.body.sugerencias };
+
+    saveComments(comments, groupCommentsDir, req.file.filename);
+
+    const groupId = req.params.groupId;
+    commentsDir = path.join(__dirname, 'uploads', groupId);
+
+    
+
     res.status(200).json({ message: 'File uploaded successfully', filePath: req.file.path });
 });
 
