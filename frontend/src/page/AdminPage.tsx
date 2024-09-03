@@ -152,11 +152,11 @@ export default function AdminPage() {
       <Card className="w-full max-w-4xl mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
           <img
-            src={auroraLogo}
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/aurora-lWqT1f0Wafzum9AbVApfe0HYvp4ohi.png"
             alt="Aurora Logo"
             className="w-48 h-12 object-contain mb-2"
           />
-          <CardTitle className="text-3xl font-bold">Vista del Observador</CardTitle>
+          <CardTitle className="text-3xl font-bold">Admin Dashboard</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           <div className="mb-6 space-y-4">
@@ -187,7 +187,7 @@ export default function AdminPage() {
                 />
                 <Button type="submit" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
                   <PlusIcon className="w-4 h-4 mr-2" />
-                  Crear
+                  Create
                 </Button>
               </form>
             </div>
@@ -195,33 +195,57 @@ export default function AdminPage() {
           
           {selectedGroup && (
             <div>
-              <h3 className="text-xl font-semibold mb-4">Fotos del grupo {selectedGroup.name}</h3>
+              <h3 className="text-xl font-semibold mb-4">{selectedGroup.name} Photos</h3>
               {selectedGroup.photos.length === 0 ? (
-                <p className="text-gray-500">Este grupo aún no ha subido fotos</p>
+                <p className="text-gray-500">No photos uploaded for this group.</p>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="space-y-6">
                   {selectedGroup.photos.map(photo => (
-                    <Card key={photo.id.toString()} className="overflow-hidden">
-                      <img
-                        src={photo.url}
-                        alt={photo.name}
-                        className="w-full h-auto object-cover"
-                      />
-                      <CardContent className="p-2">
-                        <div className="flex items-center mb-2">
-                          <ImageIcon className="h-5 w-5 text-cyan-500 mr-2" />
-                          <p className="text-sm font-medium truncate">{photo.name}</p>
-                        </div>
-                        <div className="flex justify-between">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleDeletePhoto(selectedGroup.id, photo.id)}
-                            className="flex-1 ml-1 text-red-500 hover:text-red-700"
-                          >
-                            <TrashIcon className="w-4 h-4 mr-1" />
-                            Delete
-                          </Button>
+                    <Card key={photo.id} className="overflow-hidden">
+                      <CardContent className="p-4">
+                        <div className="flex flex-col md:flex-row gap-4">
+                          <div className="w-full md:w-1/3">
+                            <img
+                              src={photo.url}
+                              alt={photo.name}
+                              className="w-full h-48 object-cover rounded-lg"
+                            />
+                            <div className="flex items-center mt-2">
+                              <ImageIcon className="h-5 w-5 text-cyan-500 mr-2" />
+                              <p className="text-sm font-medium truncate">{photo.name}</p>
+                            </div>
+                            <div className="flex justify-between mt-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleDeletePhoto(selectedGroup.id, photo.id)}
+                                className="flex-1 ml-1 text-red-500 hover:text-red-700"
+                              >
+                                <TrashIcon className="w-4 h-4 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="w-full md:w-2/3 space-y-4">
+                            <div>
+                              <Label htmlFor={`quejas-${photo.id}`} className="text-gray-700">Quejas</Label>
+                              <div
+                                id={`quejas-${photo.id}`}
+                                className="mt-1 p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700"
+                              >
+                                {photo.quejas || 'No hay quejas'}
+                              </div>
+                            </div>
+                            <div>
+                              <Label htmlFor={`sugerencias-${photo.id}`} className="text-gray-700">Sugerencias</Label>
+                              <div
+                                id={`sugerencias-${photo.id}`}
+                                className="mt-1 p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700"
+                              >
+                                {photo.sugerencias || 'No hay sugerencias'}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>

@@ -5,8 +5,9 @@ import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
+import { UploadIcon, ImageIcon, LogOutIcon, SendIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
+import { Textarea } from '../components/ui/textarea'
 
 const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
 
@@ -16,6 +17,8 @@ export default function PhotoUploader() {
   const [password, setPassword] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadedPhotos, setUploadedPhotos] = useState([])
+  const [quejas, setQuejas] = useState('')
+  const [sugerencias, setSugerencias] = useState('')
 
   const sendPhoto = async (groupId, photo) => {
     return fetch(`http://${host}:8080/upload/${groupId}`, {
@@ -36,7 +39,7 @@ export default function PhotoUploader() {
     getGroupPhotos(groupName).then(photos => {
       setUploadedPhotos(photos)
     })
-  },[isLoggedIn, groupName])
+  }, [isLoggedIn, groupName])
 
   const handleLogin = (event) => {
     event.preventDefault()
@@ -81,8 +84,8 @@ export default function PhotoUploader() {
             return
           }
 
-          setUploadedPhotos([...uploadedPhotos, { 
-            id: Date.now(), 
+          setUploadedPhotos([...uploadedPhotos, {
+            id: Date.now(),
             name: selectedFile.name,
             url: response.url
           }])
@@ -111,21 +114,21 @@ export default function PhotoUploader() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <Label htmlFor="groupName" className="text-gray-700">Nombre de grupo</Label>
-                <Input 
-                  id="groupName" 
-                  value={groupName} 
-                  onChange={(e) => setGroupName(e.target.value)} 
+                <Input
+                  id="groupName"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
                   required
                   className="border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                 />
               </div>
               <div>
                 <Label htmlFor="password" className="text-gray-700">Password</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className="border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                 />
@@ -145,17 +148,37 @@ export default function PhotoUploader() {
               <form onSubmit={handleUpload} className="space-y-4" encType='multipart/form-data'>
                 <div>
                   <Label htmlFor="photo" className="text-gray-700">Upload Photo</Label>
-                  <Input 
-                    id="photo" 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleFileChange} 
+                  <Input
+                    id="photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
                     required
                     className="border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                   />
                 </div>
-                <Button 
-                  type="submit" 
+                <div>
+                  <Label htmlFor="quejas">Quejas</Label>
+                  <Textarea
+                    id="quejas"
+                    value={quejas}
+                    onChange={(e) => setQuejas(e.target.value)}
+                    placeholder="Enter complaints here"
+                    className="mt-1 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sugerencias">Sugerencias</Label>
+                  <Textarea
+                    id="sugerencias"
+                    value={sugerencias}
+                    onChange={(e) => setSugerencias(e.target.value)}
+                    placeholder="Enter suggestions here"
+                    className="mt-1 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+                  />
+                </div>
+                <Button
+                  type="submit"
                   disabled={!selectedFile}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
                 >
@@ -170,21 +193,31 @@ export default function PhotoUploader() {
                 ) : (
                   <ul className="space-y-2">
                     {uploadedPhotos.map((photo) => (
-                    <Card key={photo.id.toString()} className="overflow-hidden">
-                      <img
-                        src={photo.url}
-                        alt={photo.name}
-                        className="w-full h-auto object-cover"
-                      />
-                      <CardContent className="p-2">
-                        <div className="flex items-center mb-2">
-                          <ImageIcon className="h-5 w-5 text-cyan-500 mr-2" />
-                          <p className="text-sm font-medium truncate">{photo.name}</p>
-                        </div>
-                        <div className="flex justify-between">
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <Card key={photo.id} className="overflow-hidden">
+                        <CardContent className="p-4">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <ImageIcon className="h-5 w-5 text-cyan-500" />
+                            <span className="font-medium">{photo.name}</span>
+                            <span className="text-sm text-muted-foreground">({photo.group})</span>
+                          </div>
+                          <div className="space-y-2">
+                            <div>
+                              <Label className="text-sm font-medium">Quejas</Label>
+                              <p className="text-sm text-gray-600">{photo.quejas || 'No complaints'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium">Sugerencias</Label>
+                              <p className="text-sm text-gray-600">{photo.sugerencias || 'No suggestions'}</p>
+                            </div>
+                          </div>
+                          <Button
+                            className="mt-2 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
+                            onClick={() => alert(`Sending data for ${photo.name}`)}
+                          >
+                            <SendIcon className="mr-2 h-4 w-4" /> Send Data
+                          </Button>
+                        </CardContent>
+                      </Card>
                     ))}
                   </ul>
                 )}
