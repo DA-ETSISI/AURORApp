@@ -4,13 +4,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_HOST=backend
+        - VITE_ADMIN_PASSWORD=admin
     ports:
       - "3000:3000"
     depends_on:
       - backend
-    environment:
-      - VITE_HOST=backend
-      - VITE_ADMIN_PASSWORD=admin123
 
   backend:
     image: backend

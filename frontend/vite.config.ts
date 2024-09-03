@@ -10,10 +10,8 @@ export default defineConfig({
       plugins: [tailwindcss()],
     },
   },
-  server: {
-    port: 3000,
-    strictPort: true,
-    host: true,
-    origin: "http://0.0.0.0:3000",
-   },
+  define: {
+    VITE_HOST: process.env.VITE_HOST,
+    VITE_ADMIN_PASSWORD: process.env.VITE_ADMIN_PASSWORD,
+  }
 })

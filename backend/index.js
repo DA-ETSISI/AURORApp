@@ -3,10 +3,11 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const { get } = require('http');
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: '*'}));
 
 // Configure multer storage settings
 
@@ -48,6 +49,10 @@ app.post('/group', (req, res) => {
 
     fs.mkdirSync(dir, { recursive: true });
 
+    const commentsDir = path.join(__dirname, 'comments', groupId);
+    
+    fs.mkdirSync(commentsDir, { recursive: true });
+
     return res.json({ message: 'Group created successfully' });
 });
 
@@ -56,12 +61,15 @@ app.post('/group', (req, res) => {
 app.delete('/group/:groupId', (req, res) => {
     const groupId = req.params.groupId;
     const dir = path.join(__dirname, 'uploads', groupId);
+    const commentsDir = path.join(__dirname, 'comments', groupId);
 
     if (!fs.existsSync(dir)) {
         return res.status(400).json({ message: 'Group does not exist' });
     }
 
     fs.rmdirSync(dir, { recursive: true });
+
+    fs.rmdirSync(commentsDir, { recursive: true });
 
     return res.json({ message: 'Group deleted successfully' });
 });
@@ -79,10 +87,15 @@ app.get('/files/:groupId', (req, res) => {
         }
 
         const fileList = files.map(file => {
+
+            const comments = getComments(commentsDir, file);
+
             return {
                 id: file,
                 name: file,
-                url: `http://localhost:8080/uploads/${groupId}/${file}`
+                url: `http://localhost:8080/uploads/${groupId}/${file}`,
+                felicitaciones: comments.felicitaciones,
+                sugerencias: comments.sugerencias
             };
         });
 
@@ -134,6 +147,15 @@ function saveComments(comments, dir, fileName) {
     fs.writeFileSync(commentsFile, JSON.stringify(comments));
 }
 
+getComments = (dir, fileName) => {
+    fileName = fileName.split('.')[0];
+    fileName = fileName + '.json';
+
+    const commentsFile = path.join(dir, fileName);
+    const data = fs.readFileSync(commentsFile);
+    return JSON.parse(data);
+}
+
 // Upload a file to a group
 
 app.post('/upload/:groupId', upload.single('image'), (req, res) => {
@@ -149,14 +171,9 @@ app.post('/upload/:groupId', upload.single('image'), (req, res) => {
         fs.mkdirSync(groupCommentsDir, { recursive: true });
     }
 
-    const comments = { quejas: req.body.quejas, sugerencias: req.body.sugerencias };
+    const comments = { felicitaciones: req.body.felicitaciones, sugerencias: req.body.sugerencias };
 
     saveComments(comments, groupCommentsDir, req.file.filename);
-
-    const groupId = req.params.groupId;
-    commentsDir = path.join(__dirname, 'uploads', groupId);
-
-    
 
     res.status(200).json({ message: 'File uploaded successfully', filePath: req.file.path });
 });
@@ -167,12 +184,15 @@ app.delete('/file/:groupId/:fileName', (req, res) => {
     const groupId = req.params.groupId;
     const fileName = req.params.fileName;
     const dir = path.join(__dirname, 'uploads', groupId, fileName);
+    const commentFileName = fileName.split('.')[0] + '.json';
+    const commentsDir = path.join(__dirname, 'comments', groupId, commentFileName);
 
     if (!fs.existsSync(dir)) {
         return res.status(400).send({ error: "Error", message: 'File does not exist' });
     }
 
     fs.unlinkSync(dir);
+    fs.unlinkSync(commentsDir);
 
     return res.status(200).json({ message: 'File deleted successfully' });
 });

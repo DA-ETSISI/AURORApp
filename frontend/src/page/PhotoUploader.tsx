@@ -9,9 +9,7 @@ import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 import { Textarea } from '../components/ui/textarea'
 
-// const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
-
-const host = 'localhost'
+const host = import.meta.env.VITE_HOST
 
 export default function PhotoUploader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -19,7 +17,7 @@ export default function PhotoUploader() {
   const [password, setPassword] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadedPhotos, setUploadedPhotos] = useState([])
-  const [quejas, setQuejas] = useState('')
+  const [felicitaciones, setFelicitaciones] = useState('')
   const [sugerencias, setSugerencias] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -46,19 +44,21 @@ export default function PhotoUploader() {
 
   const handleLogin = (event) => {
     event.preventDefault()
-
+    setLoading(true)
     checkIfGroupExists(groupName)
       .then(response => {
         if (response.status !== 200) {
+          setLoading(false)
           alert('Invalid group name or password')
           return
         } else {
           const passwordToCheck = btoa(groupName)
           if (password !== passwordToCheck) {
+            setLoading(false)
             alert('Invalid group name or password')
             return
           }
-
+          setLoading(false)
           setIsLoggedIn(true)
         }
       })
@@ -80,7 +80,7 @@ export default function PhotoUploader() {
       setLoading(true)
       const formData = new FormData()
       formData.append('image', selectedFile)
-      formData.append('quejas', quejas)
+      formData.append('felicitaciones', felicitaciones)
       formData.append('sugerencias', sugerencias)
 
       sendPhoto(groupName, formData)
@@ -95,12 +95,12 @@ export default function PhotoUploader() {
             id: Date.now(),
             name: selectedFile.name,
             url: response.url,
-            quejas: undefined,
+            felicitaciones: undefined,
             sugerencias: undefined,
           }
 
-          if (quejas) {
-            photo.quejas = quejas
+          if (felicitaciones) {
+            photo.felicitaciones = felicitaciones
           }
 
           if (sugerencias) {
@@ -143,7 +143,7 @@ export default function PhotoUploader() {
                 />
               </div>
               <div>
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
+                <Label htmlFor="password" className="text-gray-700">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
@@ -154,7 +154,7 @@ export default function PhotoUploader() {
                 />
               </div>
               <Button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
-                Login
+                {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
               </Button>
             </form>
           ) : (
@@ -178,12 +178,12 @@ export default function PhotoUploader() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="quejas">Quejas</Label>
+                  <Label htmlFor="felicitaciones">Felicitaciones</Label>
                   <Textarea
-                    id="quejas"
-                    value={quejas}
-                    onChange={(e) => setQuejas(e.target.value)}
-                    placeholder="Introduce tus quejas aqui"
+                    id="felicitaciones"
+                    value={felicitaciones}
+                    onChange={(e) => setFelicitaciones(e.target.value)}
+                    placeholder="Introduce tus felicitaciones aqui"
                     className="mt-1 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                   />
                 </div>
@@ -218,16 +218,15 @@ export default function PhotoUploader() {
                           <div className="flex items-center space-x-2 mb-2">
                             <ImageIcon className="h-5 w-5 text-cyan-500" />
                             <span className="font-medium">{photo.name}</span>
-                            <span className="text-sm text-muted-foreground">({photo.group})</span>
                           </div>
                           <div className="space-y-2">
                             <div>
-                              <Label className="text-sm font-medium">Quejas</Label>
-                              <p className="text-sm text-gray-600">{photo.quejas || 'No complaints'}</p>
+                              <Label className="text-sm font-medium">Felicitaciones</Label>
+                              <p className="text-sm text-gray-600">{photo.felicitaciones || 'No hay ninguna queja'}</p>
                             </div>
                             <div>
                               <Label className="text-sm font-medium">Sugerencias</Label>
-                              <p className="text-sm text-gray-600">{photo.sugerencias || 'No suggestions'}</p>
+                              <p className="text-sm text-gray-600">{photo.sugerencias || 'No hay ninguna sugerencia'}</p>
                             </div>
                           </div>
                         </CardContent>

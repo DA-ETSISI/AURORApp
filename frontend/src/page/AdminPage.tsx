@@ -8,13 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 
-// const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
+const host = import.meta.env.VITE_HOST
 
-const host = 'localhost'
-
-// const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || process.env.VITE_ADMIN_PASSWORD
-
-const realAdminPassword = 'admin'
+const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD
 
 export default function AdminPage() {
   const [groups, setGroups] = useState([])
@@ -182,7 +178,7 @@ export default function AdminPage() {
             alt="Aurora Logo"
             className="w-48 h-12 object-contain mb-2"
           />
-          <CardTitle className="text-3xl font-bold">Pandel de Administrador</CardTitle>
+          <CardTitle className="text-3xl font-bold">Panel de Administrador</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           <div className="mb-6 space-y-4">
@@ -254,12 +250,12 @@ export default function AdminPage() {
                           </div>
                           <div className="w-full md:w-2/3 space-y-4">
                             <div>
-                              <Label htmlFor={`quejas-${photo.id}`} className="text-gray-700">Quejas</Label>
+                              <Label htmlFor={`felicitaciones-${photo.id}`} className="text-gray-700">Felicitaciones</Label>
                               <div
-                                id={`quejas-${photo.id}`}
+                                id={`felicitaciones-${photo.id}`}
                                 className="mt-1 p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700"
                               >
-                                {photo.quejas || 'No hay quejas'}
+                                {photo.felicitaciones || 'No hay felicitaciones'}
                               </div>
                             </div>
                             <div>
