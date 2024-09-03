@@ -9,7 +9,9 @@ import { UploadIcon, ImageIcon, LogOutIcon, SendIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 import { Textarea } from '../components/ui/textarea'
 
-const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
+// const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
+
+const host = 'localhost'
 
 export default function PhotoUploader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)

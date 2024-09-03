@@ -8,9 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 
-const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
+// const host = import.meta.env.VITE_HOST || process.env.VITE_HOST
 
-const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || process.env.VITE_ADMIN_PASSWORD
+const host = 'localhost'
+
+// const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || process.env.VITE_ADMIN_PASSWORD
+
+const realAdminPassword = 'admin'
 
 export default function AdminPage() {
   const [groups, setGroups] = useState([])
@@ -152,7 +156,7 @@ export default function AdminPage() {
       <Card className="w-full max-w-4xl mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
           <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/aurora-lWqT1f0Wafzum9AbVApfe0HYvp4ohi.png"
+            src={auroraLogo}
             alt="Aurora Logo"
             className="w-48 h-12 object-contain mb-2"
           />
