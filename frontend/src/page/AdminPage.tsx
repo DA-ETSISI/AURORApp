@@ -22,6 +22,7 @@ export default function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [selectedGroupId, setSelectedGroupId] = useState(groups[0]?.id.toString())
   const [newGroupName, setNewGroupName] = useState('')
+  const [loading, setLoading] = useState(false)
   
   useEffect(() => {
     getGroups().then(groups => {
@@ -29,6 +30,7 @@ export default function AdminPage() {
         setGroups([])
         return
       }
+
       for (const group of groups) {
         group.id = group.name
         const photos = getPhotos(group.id)
@@ -40,6 +42,24 @@ export default function AdminPage() {
       setGroups(groups)
     })
   }, [])
+
+
+  useEffect(() => {
+    if (!selectedGroupId) return
+
+    getPhotos(selectedGroupId).then(photos => {
+      setGroups(groups.map(group => {
+        if (group.id === selectedGroupId) {
+          return {
+            ...group,
+            photos
+          }
+        }
+        return group
+      }))
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGroupId])
 
 
 
@@ -94,6 +114,7 @@ export default function AdminPage() {
   const handleCreateGroup = (event) => {
     event.preventDefault()
     if (newGroupName.trim()) {
+      setLoading(true)
       fetch(`http://${host}:8080/group`, {
         method: 'POST',
         headers: {
@@ -110,6 +131,7 @@ export default function AdminPage() {
         setGroups([...groups, newGroup])
         setNewGroupName('')
         setSelectedGroupId(newGroup.id.toString())
+        setLoading(false)
       })
     }
   }
@@ -124,12 +146,12 @@ export default function AdminPage() {
               alt="Aurora Logo"
               className="w-48 h-12 object-contain mb-2"
             />
-            <CardTitle className="text-3xl font-bold">Inicio de Sesión Observador</CardTitle>
+            <CardTitle className="text-3xl font-bold">Inicio de sesión Admin</CardTitle>
           </CardHeader>
           <CardContent className="mt-4">
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <Label htmlFor="adminPassword" className="text-gray-700">Admin Password</Label>
+                <Label htmlFor="adminPassword" className="text-gray-700">Contraseña de Administrador</Label>
                 <Input 
                   id="adminPassword" 
                   type="password"
@@ -160,15 +182,15 @@ export default function AdminPage() {
             alt="Aurora Logo"
             className="w-48 h-12 object-contain mb-2"
           />
-          <CardTitle className="text-3xl font-bold">Admin Dashboard</CardTitle>
+          <CardTitle className="text-3xl font-bold">Pandel de Administrador</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           <div className="mb-6 space-y-4">
             <div>
-              <Label htmlFor="groupSelect" className="text-gray-700 mb-2 block">Select Group</Label>
+              <Label htmlFor="groupSelect" className="text-gray-700 mb-2 block">Selección de grupo</Label>
               <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
                 <SelectTrigger id="groupSelect" className="w-full">
-                  <SelectValue placeholder="Select a group" />
+                  <SelectValue placeholder="Selecciona un grupo" />
                 </SelectTrigger>
                 <SelectContent>
                   {groups.map(group => (
@@ -180,18 +202,18 @@ export default function AdminPage() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="newGroupName" className="text-gray-700 mb-2 block">Create New Group</Label>
+              <Label htmlFor="newGroupName" className="text-gray-700 mb-2 block">Crear nuevo grupo</Label>
               <form onSubmit={handleCreateGroup} className="flex space-x-2">
                 <Input
                   id="newGroupName"
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
-                  placeholder="Enter group name"
+                  placeholder="Introduce el nombre del grupo"
                   className="flex-grow border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                 />
                 <Button type="submit" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
                   <PlusIcon className="w-4 h-4 mr-2" />
-                  Create
+                  {loading ? 'Creando...' : 'Crear'}
                 </Button>
               </form>
             </div>
@@ -199,9 +221,9 @@ export default function AdminPage() {
           
           {selectedGroup && (
             <div>
-              <h3 className="text-xl font-semibold mb-4">{selectedGroup.name} Photos</h3>
+              <h3 className="text-xl font-semibold mb-4">{selectedGroup.name} Fotos</h3>
               {selectedGroup.photos.length === 0 ? (
-                <p className="text-gray-500">No photos uploaded for this group.</p>
+                <p className="text-gray-500">Este grupo aún no ha subido fotos</p>
               ) : (
                 <div className="space-y-6">
                   {selectedGroup.photos.map(photo => (
@@ -226,7 +248,7 @@ export default function AdminPage() {
                                 className="flex-1 ml-1 text-red-500 hover:text-red-700"
                               >
                                 <TrashIcon className="w-4 h-4 mr-1" />
-                                Delete
+                                Borrar
                               </Button>
                             </div>
                           </div>

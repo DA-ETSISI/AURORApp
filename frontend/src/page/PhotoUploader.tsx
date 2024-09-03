@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { UploadIcon, ImageIcon, LogOutIcon, SendIcon } from 'lucide-react'
+import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 import { Textarea } from '../components/ui/textarea'
 
@@ -21,6 +21,7 @@ export default function PhotoUploader() {
   const [uploadedPhotos, setUploadedPhotos] = useState([])
   const [quejas, setQuejas] = useState('')
   const [sugerencias, setSugerencias] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const sendPhoto = async (groupId, photo) => {
     return fetch(`http://${host}:8080/upload/${groupId}`, {
@@ -76,12 +77,14 @@ export default function PhotoUploader() {
   const handleUpload = (event) => {
     event.preventDefault()
     if (selectedFile) {
+      setLoading(true)
       const formData = new FormData()
       formData.append('image', selectedFile)
 
       sendPhoto(groupName, formData)
         .then(response => {
           if (!response.filePath) {
+            setLoading(false)
             alert('Error uploading photo')
             return
           }
@@ -94,6 +97,7 @@ export default function PhotoUploader() {
 
           setSelectedFile(null)
           event.target.reset()
+          setLoading(false)
         })
     }
   }
@@ -142,14 +146,14 @@ export default function PhotoUploader() {
           ) : (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-800">Welcome, {groupName}!</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Bienvenido, {groupName}!</h2>
                 <Button variant="outline" onClick={handleLogout} className="text-red-500 border-red-500 hover:bg-red-50">
-                  <LogOutIcon className="mr-2 h-4 w-4" /> Logout
+                  <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
                 </Button>
               </div>
               <form onSubmit={handleUpload} className="space-y-4" encType='multipart/form-data'>
                 <div>
-                  <Label htmlFor="photo" className="text-gray-700">Upload Photo</Label>
+                  <Label htmlFor="photo" className="text-gray-700">Selecciona la foto</Label>
                   <Input
                     id="photo"
                     type="file"
@@ -165,7 +169,7 @@ export default function PhotoUploader() {
                     id="quejas"
                     value={quejas}
                     onChange={(e) => setQuejas(e.target.value)}
-                    placeholder="Enter complaints here"
+                    placeholder="Introduce tus quejas aqui"
                     className="mt-1 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                   />
                 </div>
@@ -175,7 +179,7 @@ export default function PhotoUploader() {
                     id="sugerencias"
                     value={sugerencias}
                     onChange={(e) => setSugerencias(e.target.value)}
-                    placeholder="Enter suggestions here"
+                    placeholder="Introduce tus sugerencias aqui"
                     className="mt-1 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                   />
                 </div>
@@ -184,14 +188,14 @@ export default function PhotoUploader() {
                   disabled={!selectedFile}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
                 >
-                  <UploadIcon className="mr-2 h-4 w-4" /> Upload Photo
+                  <UploadIcon className="mr-2 h-4 w-4" /> {loading ? 'Subiendo...' : 'Subir foto'}
                 </Button>
               </form>
 
               <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800">Uploaded Photos</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Fotos subidas</h3>
                 {uploadedPhotos.length === 0 ? (
-                  <p className="text-gray-500">No photos uploaded yet.</p>
+                  <p className="text-gray-500">No se han subido fotos aun</p>
                 ) : (
                   <ul className="space-y-2">
                     {uploadedPhotos.map((photo) => (
@@ -212,12 +216,6 @@ export default function PhotoUploader() {
                               <p className="text-sm text-gray-600">{photo.sugerencias || 'No suggestions'}</p>
                             </div>
                           </div>
-                          <Button
-                            className="mt-2 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
-                            onClick={() => alert(`Sending data for ${photo.name}`)}
-                          >
-                            <SendIcon className="mr-2 h-4 w-4" /> Send Data
-                          </Button>
                         </CardContent>
                       </Card>
                     ))}
