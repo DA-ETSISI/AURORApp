@@ -3,7 +3,6 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-const { get } = require('http');
 const app = express();
 
 app.use(express.json());
