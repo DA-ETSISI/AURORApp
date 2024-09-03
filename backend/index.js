@@ -81,7 +81,7 @@ app.get('/files/:groupId', (req, res) => {
             return {
                 id: file,
                 name: file,
-                url: `http://localhost:3000/uploads/${groupId}/${file}`
+                url: `http://localhost:8080/uploads/${groupId}/${file}`
             };
         });
 
@@ -155,5 +155,5 @@ app.get('/', (req, res) => {
 // Serve API on port 3000
 
 app.listen(8080, () => {
-  console.log('Server started on http://localhost:3000');
+  console.log('Server started on http://localhost:8080');
 });
