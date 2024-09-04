@@ -9,9 +9,9 @@ app.use(express.json());
 app.use(cors({origin: '*'}));
 app.use(express.static('../frontend/dist'));
 
-const host = 'dev.etsisi.da.upm.es'
+const router = express.Router();
 
-// Configure multer storage settings
+const host = 'dev.etsisi.da.upm.es'
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -35,19 +35,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname,"../frontend/dist", "index.html"));
-  });
-
-// Serve uploaded files
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static('../frontend/dist'));
 
 // Create a group
 
-app.post('/group', (req, res) => {
+router.post('/group', (req, res) => {
     const groupId = req.body.name;
     const dir = path.join(__dirname, 'uploads', groupId);
+
+    console.log(__dirname + 'uploads' + groupId);
 
     if (fs.existsSync(dir)) {
         return res.status(400).json({ message: 'Group already exists' });
@@ -64,7 +60,7 @@ app.post('/group', (req, res) => {
 
 // Delete a group
 
-app.delete('/group/:groupId', (req, res) => {
+router.delete('/group/:groupId', (req, res) => {
     const groupId = req.params.groupId;
     const dir = path.join(__dirname, 'uploads', groupId);
     const commentsDir = path.join(__dirname, 'comments', groupId);
@@ -82,7 +78,7 @@ app.delete('/group/:groupId', (req, res) => {
 
 // Get all files on a Group
 
-app.get('/files/:groupId', (req, res) => {
+router.get('/files/:groupId', (req, res) => {
     const groupId = req.params.groupId;
     const dir = path.join(__dirname, 'uploads', groupId);
     const commentsDir = path.join(__dirname, 'comments', groupId);
@@ -111,7 +107,7 @@ app.get('/files/:groupId', (req, res) => {
 
 // Get if a group exists
 
-app.get('/group/:groupId', (req, res) => {
+router.get('/group/:groupId', (req, res) => {
     console.log("Group ID: ", req.params.groupId);
     const groupId = req.params.groupId;
     const dir = path.join(__dirname, 'uploads', groupId);
@@ -125,7 +121,7 @@ app.get('/group/:groupId', (req, res) => {
 
 // Get all groups
 
-app.get('/groups', (req, res) => {
+router.get('/groups', (req, res) => {
     const dir = path.join(__dirname, 'uploads');
 
     fs.readdir(dir, (err, files) => {
@@ -164,7 +160,7 @@ getComments = (dir, fileName) => {
 
 // Upload a file to a group
 
-app.post('/upload/:groupId', upload.single('image'), (req, res) => {
+router.post('/upload/:groupId', upload.single('image'), (req, res) => {
     const baseCommentsDir = path.join(__dirname, 'comments');
 
     if (!fs.existsSync(baseCommentsDir)) {
@@ -186,7 +182,7 @@ app.post('/upload/:groupId', upload.single('image'), (req, res) => {
 
 // Delete a file from a group
 
-app.delete('/file/:groupId/:fileName', (req, res) => {
+router.delete('/file/:groupId/:fileName', (req, res) => {
     const groupId = req.params.groupId;
     const fileName = req.params.fileName;
     const dir = path.join(__dirname, 'uploads', groupId, fileName);
@@ -205,9 +201,15 @@ app.delete('/file/:groupId/:fileName', (req, res) => {
 
 // Welcome message
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
     return res.json({ message: 'Welcome to the file upload API' });
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use('/', router);
+
+app.use('*', (req, res) => res.sendFile(path.join(__dirname, '../frontend/dist/index.html')));
 
 // Serve API on port 3000
 
