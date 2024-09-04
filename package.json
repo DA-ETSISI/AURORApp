@@ -1,0 +1,17 @@
+{
+  "name": "aurorapp",
+  "version": "1.0.0",
+  "description": "Apliación para las Jornadas de Bienvenida - Actividad AURORA",
+  "main": "index.js",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run start --workspace backend && npm run dev --workspace frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

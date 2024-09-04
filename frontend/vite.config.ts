@@ -11,7 +11,6 @@ export default defineConfig({
     },
   },
   define: {
-    VITE_HOST: process.env.VITE_HOST,
     VITE_ADMIN_PASSWORD: process.env.VITE_ADMIN_PASSWORD,
   }
 })

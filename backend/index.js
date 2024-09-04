@@ -7,6 +7,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({origin: '*'}));
+app.use(express.static('../frontend/dist'));
 
 // Configure multer storage settings
 
@@ -31,6 +32,10 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage: storage });
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname,"../frontend/dist", "index.html"));
+  });
 
 // Serve uploaded files
 

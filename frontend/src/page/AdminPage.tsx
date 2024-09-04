@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 
-const host = import.meta.env.VITE_HOST
+const host = "localhost"
 
 const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD
 
