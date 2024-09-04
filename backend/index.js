@@ -9,6 +9,8 @@ app.use(express.json());
 app.use(cors({origin: '*'}));
 app.use(express.static('../frontend/dist'));
 
+const host = 'dev.etsisi.da.upm.es'
+
 // Configure multer storage settings
 
 const storage = multer.diskStorage({
@@ -97,7 +99,7 @@ app.get('/files/:groupId', (req, res) => {
             return {
                 id: file,
                 name: file,
-                url: `http://localhost:8080/uploads/${groupId}/${file}`,
+                url: `https://${host}/uploads/${groupId}/${file}`,
                 felicitaciones: comments.felicitaciones,
                 sugerencias: comments.sugerencias
             };

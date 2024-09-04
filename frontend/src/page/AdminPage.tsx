@@ -8,9 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { TrashIcon, ImageIcon, PlusIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 
-const host = "localhost"
+const host = "dev.etsisi.da.upm.es"
 
-const realAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD
+const realAdminPassword = "<your-password>"
 
 export default function AdminPage() {
   const [groups, setGroups] = useState([])
@@ -60,16 +60,16 @@ export default function AdminPage() {
 
 
   const getGroups = () => {
-    return fetch(`http://${host}:8080/groups`, { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
+    return fetch(`https://${host}/groups`, { headers: {'Access-Control-Allow-Origin': '*'} }).then(response => response.json())
   }
 
   const getPhotos = (groupId) => {
-    return fetch(`http://${host}:8080/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
+    return fetch(`https://${host}/files/${groupId}`, { headers: {'Access-Control-Allow-Origin': '*'}}).then(response => response.json())
   }
 
 
   const deletePhoto = (groupId, photoId) => {
-    return fetch(`http://${host}:8080/file/${groupId}/${photoId}`, {
+    return fetch(`https://${host}/file/${groupId}/${photoId}`, {
       method: 'DELETE',
       headers: {
         'Access-Control-Allow-Origin': '*'
@@ -111,7 +111,7 @@ export default function AdminPage() {
     event.preventDefault()
     if (newGroupName.trim()) {
       setLoading(true)
-      fetch(`http://${host}:8080/group`, {
+      fetch(`https://${host}/group`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

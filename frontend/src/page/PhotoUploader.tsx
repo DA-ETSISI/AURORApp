@@ -9,7 +9,7 @@ import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 import { Textarea } from '../components/ui/textarea'
 
-const host = "locahost"
+const host = "dev.etsisi.da.upm.es"
 
 export default function PhotoUploader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -22,18 +22,18 @@ export default function PhotoUploader() {
   const [loading, setLoading] = useState(false)
 
   const sendPhoto = async (groupId, photo) => {
-    return fetch(`http://${host}:8080/upload/${groupId}`, {
+    return fetch(`https://${host}/upload/${groupId}`, {
       method: 'POST',
       body: photo
     }).then(response => response.json())
   }
 
   const getGroupPhotos = async (groupId) => {
-    return fetch(`http://${host}:8080/files/${groupId}`).then(response => response.json())
+    return fetch(`https://${host}/files/${groupId}`).then(response => response.json())
   }
 
   const checkIfGroupExists = async (groupId) => {
-    return fetch(`http://${host}:8080/group/${groupId}`)
+    return fetch(`https://${host}/group/${groupId}`)
   }
 
   useEffect(() => {
