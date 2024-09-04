@@ -8,6 +8,10 @@ ENV NODE_ENV=production
 
 ENV VITE_ADMIN_PASSWORD=<put_the_password_here>
 
+RUN npm install -g vite
+
+RUN npm install -g typescript
+
 RUN cd frontend && npm install && npm run build
 
 RUN cd ../backend && npm install
