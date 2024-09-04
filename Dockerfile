@@ -2,19 +2,15 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+RUN chmod -R 777 /app
+
 COPY . .
 
 ENV NODE_ENV=production
 
-ENV VITE_ADMIN_PASSWORD=<put_the_password_here>
+RUN cd ./backend
 
-RUN npm install -g vite
-
-RUN npm install -g typescript
-
-RUN cd frontend && npm install && npm run build
-
-RUN cd ../backend && npm install
+RUN npm install
 
 EXPOSE 8080
 
