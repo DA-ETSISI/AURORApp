@@ -20,4 +20,4 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./backend:/app
+      - ./backend:/app/uploads
