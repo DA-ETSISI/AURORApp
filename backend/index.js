@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
         
         const files = fs.readdirSync(dir);
         if (files.length >= 2) {
-            cb(new Error("Has alcanzado el número máximo de archivos (2)"), null);
+            cb({ message: "No puedes subir más de 2 fotos" }, null);
         }
 
         cb(null, dir);

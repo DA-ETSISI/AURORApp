@@ -49,13 +49,13 @@ export default function PhotoUploader() {
       .then(response => {
         if (response.status !== 200) {
           setLoading(false)
-          alert('Invalid group name or password')
+          alert('Grupo o contraseña incorrectos')
           return
         } else {
           const passwordToCheck = btoa(groupName)
           if (password !== passwordToCheck) {
             setLoading(false)
-            alert('Invalid group name or password')
+            alert('Grupo o contraseña incorrectos')
             return
           }
           setLoading(false)
@@ -91,9 +91,9 @@ export default function PhotoUploader() {
             return
           }
 
-          if (response.error) {
+          if (response.message) {
             setLoading(false)
-            alert(response.error)
+            alert(response.message)
             return
           }
 
