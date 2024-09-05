@@ -91,9 +91,9 @@ export default function PhotoUploader() {
             return
           }
 
-          if (response.message) {
+          if (response.error) {
             setLoading(false)
-            alert(response.message)
+            alert(response.error)
             return
           }
 
