@@ -22,12 +22,6 @@ const storage = multer.diskStorage({
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
-        
-        const files = fs.readdirSync(dir);
-        if (files.length >= 2) {
-            cb({ error: "No puedes subir más de 2 fotos" }, null);
-        }
-
         cb(null, dir);
     },
     filename: function (req, file, cb) {

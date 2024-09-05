@@ -91,12 +91,6 @@ export default function PhotoUploader() {
             return
           }
 
-          if (response.error) {
-            setLoading(false)
-            alert(response.error)
-            return
-          }
-
           const photo = {
             id: Date.now(),
             name: selectedFile.name,
