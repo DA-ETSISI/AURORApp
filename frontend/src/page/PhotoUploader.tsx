@@ -123,9 +123,9 @@ export default function PhotoUploader() {
           <img
             src={auroraLogo}
             alt="Aurora Logo"
-            width={200}
-            height={50}
-            className="mb-2"
+            width={700}
+            height={220}
+            className="mb-2 bg-white rounded-lg p-2 shadow-lg bg-opacity-70"
           />
           <CardTitle className="text-3xl font-bold">Subida de fotos</CardTitle>
         </CardHeader>
@@ -162,12 +162,12 @@ export default function PhotoUploader() {
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-800">Bienvenido, {groupName}!</h2>
                 <Button variant="outline" onClick={handleLogout} className="text-red-500 border-red-500 hover:bg-red-50">
-                  <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
+                  <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar sesión
                 </Button>
               </div>
               <form onSubmit={handleUpload} className="space-y-4" encType='multipart/form-data'>
                 <div>
-                  <Label htmlFor="photo" className="text-gray-700">Selecciona la foto</Label>
+                  <Label htmlFor="photo" className="text-gray-700">Selecciona solo una foto por cada subida</Label>
                   <Input
                     id="photo"
                     type="file"
@@ -176,6 +176,8 @@ export default function PhotoUploader() {
                     required
                     className="border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
                   />
+                </div>
+                <div>
                 </div>
                 <div>
                   <Label htmlFor="felicitaciones">Felicitaciones</Label>

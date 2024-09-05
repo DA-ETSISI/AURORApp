@@ -137,11 +137,13 @@ export default function AdminPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
         <Card className="w-full max-w-md mx-auto bg-white shadow-xl">
           <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
-            <img
-              src={auroraLogo}
-              alt="Aurora Logo"
-              className="w-48 h-12 object-contain mb-2"
-            />
+          <img
+            src={auroraLogo}
+            alt="Aurora Logo"
+            width={700}
+            height={220}
+            className="mb-2 bg-white rounded-lg p-2 shadow-lg bg-opacity-70"
+          />
             <CardTitle className="text-3xl font-bold">Inicio de sesión Admin</CardTitle>
           </CardHeader>
           <CardContent className="mt-4">
@@ -158,7 +160,7 @@ export default function AdminPage() {
                 />
               </div>
               <Button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
-                Login
+                Iniciar sesión
               </Button>
             </form>
           </CardContent>
@@ -173,12 +175,14 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
       <Card className="w-full max-w-4xl mx-auto bg-white shadow-xl">
         <CardHeader className="flex flex-col items-center space-y-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-t-lg">
-          <img
+        <img
             src={auroraLogo}
             alt="Aurora Logo"
-            className="w-48 h-12 object-contain mb-2"
+            width={700}
+            height={220}
+            className="mb-2 bg-white rounded-lg p-2 shadow-lg bg-opacity-70"
           />
-          <CardTitle className="text-3xl font-bold">Panel de Administrador</CardTitle>
+          <CardTitle className="text-3xl font-bold text-center">Panel de Administrador</CardTitle>
         </CardHeader>
         <CardContent className="mt-4">
           <div className="mb-6 space-y-4">
