@@ -10,7 +10,7 @@ import auroraLogo from '../../public/Logo-Website.webp'
 
 const host = "dev.etsisi.da.upm.es"
 
-const realAdminPassword = "<your-password>"
+const realAdminPassword = "4ur0r4Obs3rv3r"
 
 export default function AdminPage() {
   const [groups, setGroups] = useState([])

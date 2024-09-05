@@ -91,6 +91,12 @@ export default function PhotoUploader() {
             return
           }
 
+          if (response.error) {
+            setLoading(false)
+            alert(response.error)
+            return
+          }
+
           const photo = {
             id: Date.now(),
             name: selectedFile.name,
@@ -108,7 +114,8 @@ export default function PhotoUploader() {
           }
 
           setUploadedPhotos([...uploadedPhotos, photo])
-
+          setFelicitaciones('')
+          setSugerencias('')
           setSelectedFile(null)
           event.target.reset()
           setLoading(false)

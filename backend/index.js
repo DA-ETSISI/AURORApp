@@ -22,6 +22,11 @@ const storage = multer.diskStorage({
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
+        
+        const files = fs.readdirSync(dir);
+        if (files.length >= 2) {
+            cb(new Error("Has alcanzado el número máximo de archivos (2)"), null);
+        }
 
         cb(null, dir);
     },
