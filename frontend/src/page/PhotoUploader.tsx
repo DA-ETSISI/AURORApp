@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { UploadIcon, ImageIcon, LogOutIcon } from 'lucide-react'
+import { UploadIcon, ImageIcon, LogOutIcon, TrashIcon } from 'lucide-react'
 import auroraLogo from '../../public/Logo-Website.webp'
 import { Textarea } from '../components/ui/textarea'
 
@@ -25,6 +25,15 @@ export default function PhotoUploader() {
     return fetch(`https://${host}/upload/${groupId}`, {
       method: 'POST',
       body: photo
+    }).then(response => response.json())
+  }
+
+  const deletePhoto = (groupId, photoId) => {
+    return fetch(`https://${host}/file/${groupId}/${photoId}`, {
+      method: 'DELETE',
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
     }).then(response => response.json())
   }
 
@@ -62,6 +71,16 @@ export default function PhotoUploader() {
           setIsLoggedIn(true)
         }
       })
+  }
+
+  const handleDeletePhoto = (groupId, photoId) => {
+    deletePhoto(groupId, photoId).then(response => {
+      if (response.error) {
+        alert('Error deleting photo')
+        return
+      }
+      setUploadedPhotos(uploadedPhotos.filter(photo => photo.id !== photoId))
+    })
   }
 
   const handleLogout = () => {
@@ -231,6 +250,15 @@ export default function PhotoUploader() {
                               <Label className="text-sm font-medium">Sugerencias</Label>
                               <p className="text-sm text-gray-600">{photo.sugerencias || 'No hay ninguna sugerencia'}</p>
                             </div>
+                            <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleDeletePhoto(groupName, photo.id)}
+                                className="flex-1 ml-1 text-red-500 hover:text-red-700"
+                              >
+                                <TrashIcon className="w-4 h-4 mr-1" />
+                                Borrar
+                              </Button>
                           </div>
                         </CardContent>
                       </Card>
